@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block body %}
+
+    {% if g.user.is_authenticated() %}
+
+        {% if g.user.custom_data['activities'] %}
+
+            <div class='info_panel'>
+            Start Date:
+            {{ g.user.custom_data['start_date'] }}
+            <br>
+            Route Activities: {{ g.route_activities }}
+            <br>
+            <b>
+            Route Miles: {{ (g.route_meters*0.000621371)|round(2) }}
+            </b>
+            </div>
+
+        {% endif %}
+
+        <div class='control_panel'>
+        <center>
+            <input onclick="location.href='{{url_for('runkeeper.get_activities')}}'" type=button value="Get new activities" {% if not g.user.custom_data['access_token'] %} disabled {% endif %}>
+        <br>
+        <br>
+        <input onclick="location.href='{{url_for('runkeeper.auth')}}'" type=button value="Authorize Runkeeper" {% if g.user.custom_data['access_token'] %} disabled {% endif %}>
+        <br>
+        <br>
+        <input onclick="location.href='{{url_for('runkeeper.deauth')}}'" type=button value="Deauthorize Runkeeper" {% if not g.user.custom_data['access_token'] %} disabled {% endif %}>
+        <br>
+        <br>
+        <form action="#" method="post">
+            {{ form.dt(class='datepicker') }}
+            {{ form.hidden_tag() }}
+            <input type="submit"/>
+        </form>
+
+        <br>
+        <br>
+        <input id="set_route_button" type="button" value="Set Route" onclick="setRoute();" />
+        <input id="undo_button" type="button" value="Undo" onclick="undo();" />
+        <input id="clear_markers_button" type="button" value="Clear Markers" onclick="deleteMarkers();" />
+
+        <br>
+        <br>
+        <input id="leave_streetview_button" type="button" value="Leave Streetview" onclick="leaveStreetview();" />
+        <br>
+        <input id="previous_streetview_button" type="button" value="Previous Streetview" onclick="previousStreetview();" />
+        <input id="next_streetview_button" type="button" value="Next Streetview" onclick="nextStreetview();" />
+        <br>
+        <input id="animate_streetview_button" type="button" value="Animate Streetview" onclick="animateStreetview();" />
+        <input id="stop_animate_streetview_button" type="button" value="Stop Animate Streetview" onclick="stopAnimateStreetview();" />
+        </center>
+        <div>
+
+    {% else %}
+
+        User has not been authenticated.
+
+    {% endif %}
+
+{% endblock %}
+
+{# vim: set syntax=jinja : #}

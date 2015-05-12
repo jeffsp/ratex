@@ -1,0 +1,73 @@
+<!doctype html>
+
+<html>
+<head>
+
+    <title>RATex</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{api_key}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='map.js') }}"></script>
+    <script type=text/javascript> var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
+
+</head>
+
+<body>
+
+    {% if g.user.is_authenticated() %}
+
+        <div id='top_panel'>
+        <img src="{{ g.user.email | gravatar(size=40) }}">
+        {{ g.user.email }}
+        <a href="/logout">Logout</a>
+        </div>
+
+        <div id="map-canvas"></div>
+
+    {% else %}
+
+        <div id='top_panel'>
+        <a href="/register">Register</a>
+        <a href="/login">Login</a>
+        </div>
+
+    {% endif %}
+
+    {% if g.user.is_authenticated() %}
+
+        {% if g.user.custom_data['route_activities'] %}
+
+            <script>
+            var r = {{ g.user.custom_data['route']|tojson }};
+            var a = {{ g.user.custom_data['route_activities']|tojson }};
+            drawRoute (r,a);
+            </script>
+
+        {% endif %}
+
+    {% endif %}
+
+    {% block body %}{% endblock %}
+
+    {% if get_flashed_messages(with_categories=true) %}
+    <div id="message_panel">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">
+                {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+     </div>
+    {% endif %}
+
+    <div id="footer"> Copyright (C) Zetamon Software 2014 </div>
+
+</body>
+</html>
+
+{# vim: set syntax=jinja : #}

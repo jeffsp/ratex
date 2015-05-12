@@ -1,0 +1,5 @@
+v/
+*.pyc
+.stormpath.apiKey.properties
+screenshots/
+secret.py
